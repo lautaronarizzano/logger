@@ -1,0 +1,50 @@
+[
+	{
+		"title": {
+			"title": "prueba",
+			"description": "descripcion",
+			"price": 180,
+			"code": "abc145",
+			"status": false,
+			"stock": 250,
+			"category": "comida"
+		},
+		"_id": 1
+	},
+	{
+		"title": {
+			"title": "prueba",
+			"description": "descripcion",
+			"price": 180,
+			"code": "abc14312",
+			"status": false,
+			"stock": 250,
+			"category": "comida"
+		},
+		"_id": 2
+	},
+	{
+		"title": {
+			"title": "prueba",
+			"description": "descripcion",
+			"price": 180,
+			"code": "abc14312",
+			"status": false,
+			"stock": 250,
+			"category": "comida"
+		},
+		"_id": 3
+	},
+	{
+		"title": {
+			"title": "prueba",
+			"description": "descripcion",
+			"price": 180,
+			"code": "abc14312",
+			"status": false,
+			"stock": 250,
+			"category": "comida"
+		},
+		"_id": 4
+	}
+]

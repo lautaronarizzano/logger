@@ -1,0 +1,19 @@
+<div>
+    <h1>Bienvenido {{user.name}}</h1>
+    <p>rol: {{user.rol}}</p>
+    <h1>products:</h1>
+    {{#each products}}
+    <div>
+        <p>title: {{this.title}}</p>
+        <p>description: {{this.description}}</p>
+        <p>thumbnail: {{this.thumbnail}}</p>
+        <img src="{{this.thumbnail}}" alt="">
+        <p>price: {{this.price}}</p>
+        <p>stock: {{this.stock}}</p>
+        <p>category: {{this.category}}</p>
+        <button>add to cart</button>
+    </div>
+    <hr/>
+    {{/each}}
+    <a href="/api/sessions/logout"><button>Salir</button></a>
+</div>

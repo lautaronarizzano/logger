@@ -1,0 +1,11 @@
+
+const EErrors = {
+    PRODUCT_FIELDS_ERROR: 1,
+    PRODUCT_NOT_FOUND: 2,
+    LOGIN_FAILED:3,
+    REGISTER_FAILED:4,
+    LOGIN_AUTH_ERROR:5,
+    USER_NOT_FOUND:6
+}
+
+export default EErrors
