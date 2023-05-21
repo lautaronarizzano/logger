@@ -1,17 +1,20 @@
+#Primero definimos la imagen que vamos a tomar como base
 FROM node:16.17.1-alpine3.16
 
-RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+#Definir el directorio de trabajo
+WORKDIR /app
 
-WORKDIR /home/node/app
-
+#Copiamos el package.json
 COPY package*.json ./
 
-USER node
-
+#Instalamos las dependencias en el contenedor
 RUN npm install
 
-COPY --chown=node:node . .
+#Copiamos el resto de archivos
+COPY . .
 
+#Definir el puerto que quiero exponer de mi contenedor
 EXPOSE 8080
 
-CMD ["node", "src/app.js"]
+#Definimos el comando que se ejecutará al iniciar el contenedor
+CMD [ "npm", "start" ]
