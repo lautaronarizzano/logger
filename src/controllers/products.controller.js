@@ -114,7 +114,8 @@ const createProduct = async (req, res) => {
             code,
             status,
             stock,
-            category
+            category,
+            owner: req.user? req.user.user.email : 'admin'
         })
         res.send({result: 'success', payload: result})
 

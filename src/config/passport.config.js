@@ -32,6 +32,7 @@ const initializePassport = () => {
             last_name,
             email,
             age,
+            rol
         } = req.body
 
         
@@ -54,7 +55,8 @@ const initializePassport = () => {
                 email,
                 age,
                 password: createHash(password),
-                rol: email.includes('admin') && password.includes('admin') ? 'admin' : 'user',
+                // rol: email.includes('admin') && password.includes('admin') ? 'admin' : 'user',
+                rol: rol,
                 carts: await cartsModel.create({
                     products: [],
                     user: email

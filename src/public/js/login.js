@@ -18,7 +18,7 @@ form.addEventListener('submit', async e => {
     });
 
     if(respuesta.status === 200) {
-s        location.href = "/products"
+        location.href = "/products"
     }  else {
         location.href = "/login"
     }

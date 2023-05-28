@@ -1,4 +1,5 @@
-import { usersModel } from '../models/usersModel.js'
+import usersModel from '../models/usersModel.js'
+import ResetPassword from '../models/resetPasswordModel.js'
 
 export default class Users {
     constructor() {
@@ -25,8 +26,18 @@ export default class Users {
         return user.toObject()
     }
 
+    getByEmail = async (email) => {
+        const user = await usersModel.findOne({email: email})
+        return user.toObject()
+    }
+
     updateById = async (id, user) => {
         const result = await userModel.updateOne({ _id: id }, user)
+        return result
+    }
+
+    saveNewPassword = async (newUser) => {
+        const result = await ResetPassword.create(newUser)
         return result
     }
 }

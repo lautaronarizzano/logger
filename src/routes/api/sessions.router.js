@@ -5,6 +5,7 @@ import passport from 'passport';
 import { register,
     failRegister,
     login,
+    forgotPasswordHandler,
     logout,
     current,
     github,
@@ -20,6 +21,8 @@ router.post('/register', passport.authenticate('register', {
 router.get('/fail-register', failRegister)
 
 router.post('/login', login);
+
+router.post('/reset-password', forgotPasswordHandler)
 
 router.get('/logout', logout)
 

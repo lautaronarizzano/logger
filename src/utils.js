@@ -11,6 +11,7 @@ import {
 } from "@faker-js/faker";
 import * as dotenv from "dotenv";
 import winston from "winston";
+import config from './config/config.js'
 
 const __filename = fileURLToPath(
   import.meta.url);
@@ -106,7 +107,7 @@ export const generateProduct = () => {
 
 
 dotenv.config();
-const ENVIROMENT = process.env.NODE_ENV;
+const ENVIROMENT = config.enviroment;
 
 const customLevelOptions = {
   levels: {
