@@ -82,11 +82,16 @@ export const authenticateToken = (req, res, next) => {
 
 //middleware para limitar el acceso a endpoints segun rol
 export const authorizeRol = (rol) => (req, res, next) => {
-  if (req.user.user.rol === rol) {
-    next();
+  if (rol.includes(req.user.user.rol)) {
+    return next();
   } else {
     res.status(401).send("Unauthorized");
   }
+  // if (req.user.user.rol === rol) {
+  //   next();
+  // } else {
+  //   res.status(401).send("Unauthorized");
+  // }
 };
 
 faker.locale = "es";

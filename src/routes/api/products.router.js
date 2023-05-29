@@ -16,10 +16,10 @@ router.get('/', authenticateToken, authorizeRol('admin'), getProducts)
 
 router.get('/:pid', authenticateToken, authorizeRol('admin'), getProductById)
 
-router.post('/', authenticateToken, authorizeRol('admin'), createProduct)
+router.post('/', authenticateToken, authorizeRol(['admin', 'premium']), createProduct)
 
-router.put('/:pid', authenticateToken, authorizeRol('admin'), updateProduct)
+router.put('/:pid', authenticateToken, authorizeRol(['admin', 'premium']), updateProduct)
 
-router.delete('/:pid', authenticateToken, authorizeRol('admin'), deleteProduct)
+router.delete('/:pid', authenticateToken, authorizeRol(['admin', 'premium']), deleteProduct)
 
 export default router

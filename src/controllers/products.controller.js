@@ -67,16 +67,16 @@ const getProductById = async (req, res) => {
     const pid = req.params.pid
     try {
         const products = await productsRepository.getProductById(pid)
-        if(products) {
-            CustomError.createError({
-                name: 'PIDError',
-                cause: generatePIDErrorInfo({
-                    pid
-                }),
-                message: 'Error tratando de encontrar un producto mediante el id',
-                code: EErrors.PRODUCT_ID_LEFT_ERROR
-            })
-        }
+        // if(products) {
+        //     CustomError.createError({
+        //         name: 'PIDError',
+        //         cause: generatePIDErrorInfo({
+        //             pid
+        //         }),
+        //         message: 'Error tratando de encontrar un producto mediante el id',
+        //         code: EErrors.PRODUCT_ID_LEFT_ERROR
+        //     })
+        // }
         res.send({status: 'success', payload: products})
     } catch (error) {
         req.logger.fatal(error)
@@ -128,6 +128,13 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     const pid = req.params.pid
     const product = req.body
+
+    const products = await productsRepository.getProductById(pid)
+
+        if(req.user.user.rol == 'premium' && products[0].owner !== req.user.user.email) {
+            req.logger.error(`Cannot delete if isn't your own product`)
+            return res.status(400).send({error: `Cannot delete if isn't your own product`})
+        }
     try {
         const result = await productManager.update(pid, product)
         res.send({status: 'success', payload: result})
@@ -140,9 +147,16 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const pid = req.params.pid
+        const product = await productsRepository.getProductById(pid)
+
+        if(req.user.user.rol == 'premium' && product[0].owner !== req.user.user.email) {
+            req.logger.error(`Cannot delete if isn't your own product`)
+            return res.status(400).send({error: `Cannot delete if isn't your own product`})
+        }
         const result = await productManager.delete(pid)
         res.send({status: 'success', payload: result})
     } catch (error) {
+        console.log(error)
         req.logger.fatal(error)
         res.status(500).send({ error })
     }

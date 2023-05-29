@@ -40,25 +40,29 @@ export default class Carts {
     addProduct = async (cid, pid) => {
         
         try{
-            const cartToUpdate = await this.getCartById(cid)
+            const cartToUpdate = await this.getById(cid)
             if(!cid || !pid) return res.status(400).send({error: "cid or pid not found"})
     
             const addPost = async (post) =>{
     
                 try {
-                    // const existingPost = cartToUpdate.products.find(p => console.log(p));
-                    const existingPost = cartToUpdate.products.find(p => p.product == post);
+                    // console.log(cartToUpdate)
+                    const existingPost = cartToUpdate.products.find(p => p.product._id == pid);
+                    // const existingPost = cartToUpdate.products.find(p => p.product == post);
 
-                    console.log('El id es: ' + existingPost)
+
+
+                    // console.log('El id es: ' + existingPost.product.owner)
+                    // console.log(req.user.user.rol)
         
-                    if(!existingPost) {
-                        throw CustomError.createError({
-                            name: `Product doesn't exist`,
-                            cause: productNotFound(pid),
-                            message: 'Error intentando agregar producto al carrito',
-                            code: EErrors.PRODUCT_NOT_FOUND
-                        })
-                    }
+                    // if(!existingPost) {
+                    //     throw CustomError.createError({
+                    //         name: `Product doesn't exist`,
+                    //         cause: productNotFound(pid),
+                    //         message: 'Error intentando agregar producto al carrito',
+                    //         code: EErrors.PRODUCT_NOT_FOUND
+                    //     })
+                    // }
         
                     if (existingPost) {
         
@@ -88,6 +92,7 @@ export default class Carts {
             addPost(pid)
 
         } catch (error){
+            console.log(error)
             res.status(500).send({error: error})
         }
 

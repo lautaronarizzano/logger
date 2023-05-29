@@ -20,9 +20,9 @@ router.get('/', getCarts)
 
 router.get('/:cid', getCartById)
 
-router.post('/', authenticateToken, authorizeRol('user') , createCart)
+router.post('/', authenticateToken, authorizeRol(['user', 'premium']) , createCart)
 
-router.post('/:cid/products/:pid', authenticateToken, authorizeRol('user'), addProductInCart)
+router.post('/:cid/products/:pid', authenticateToken, authorizeRol(['user', 'premium']), addProductInCart)
 
 router.put('/:cid/products/:pid', updateQuantity)
 

@@ -58,13 +58,23 @@ const addProductInCart = async (req, res) => {
     const cid = req.params.cid
     const pid = req.params.pid
     try {
-        const result = await cartsManager.addProduct(cid, pid)
+        const cart = await cartsManager.getById(cid)
+        // const product = cart.products.find(p => p.product._id == pid)
+        const product = await productsManager.getById(pid)
+
+        console.log(product[0].owner)
+        if(req.user.user.rol == 'premium' && product[0].owner == req.user.user.email) {
+            req.logger.error(`can't add your own product ${product[0].title}`)
+            return res.status(400).send({error: `can't add your own product ${product[0].title}`})
+        }
+        const result = await cartsManager.addProduct(cart, product)
         res.send({
             status: 'success',
             message: 'The product with id ' + pid + ' was added successfully from cart ' + cid + '',
             payload: result
         })
     } catch (error) {
+        console.log(error)
         req.logger.fatal(error)
         res.status(500).send({
             error: 'el error es ' + error
