@@ -32,7 +32,7 @@ export default class Users {
     }
 
     updateById = async (id, user) => {
-        const result = await userModel.updateOne({ _id: id }, user)
+        const result = await usersModel.updateOne({ _id: id }, user)
         return result
     }
 

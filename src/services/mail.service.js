@@ -4,7 +4,8 @@ import config from '../config/config.js'
 async function sendMail(data) {
 
     let transporter = createTransport({
-        service: config.mailHost,
+        // service: config.mailHost,
+        host: `'smtp.gmail.com'`,
         port: config.mailPort,
         secure: false, // true for 465, false for other ports
         auth: {

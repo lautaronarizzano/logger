@@ -11,6 +11,7 @@ import viewsRouter from './routes/web/views.router.js'
 import sessionsRouter from './routes/api/sessions.router.js'
 import mockProductsRouter from './routes/api/mockproducts.router.js'
 import loggerRouter from './routes/api/logger.router.js'
+import usersRouter from './routes/api/users.router.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 // import Chats from './dao/dbManagers/chat.js'
@@ -67,6 +68,7 @@ app.use('/api/sessions', sessionsRouter)
 app.use('/api/auth', sessionsRouter)
 app.use('/mockingproducts', mockProductsRouter)
 app.use('/loggerTest', loggerRouter)
+app.use('/api/users', usersRouter)
 
 const server = app.listen(Number(config.port), () => console.log(`Server running on port ${config.port}`))
 

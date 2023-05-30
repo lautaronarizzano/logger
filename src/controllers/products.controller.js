@@ -132,8 +132,8 @@ const updateProduct = async (req, res) => {
     const products = await productsRepository.getProductById(pid)
 
         if(req.user.user.rol == 'premium' && products[0].owner !== req.user.user.email) {
-            req.logger.error(`Cannot delete if isn't your own product`)
-            return res.status(400).send({error: `Cannot delete if isn't your own product`})
+            req.logger.error(`Cannot edit if isn't your own product`)
+            return res.status(400).send({error: `Cannot edit if isn't your own product`})
         }
     try {
         const result = await productManager.update(pid, product)
