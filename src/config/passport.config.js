@@ -2,12 +2,9 @@ import passport from 'passport'
 import local from 'passport-local'
 import userModel from '../dao/models/usersModel.js'
 import GithubStrategy from 'passport-github2'
-import {
-    createHash,
-} from '../utils.js'
 import jwt from 'passport-jwt';
 import {
-    PRIVATE_KEY
+    createHash
 } from '../utils.js';
 import UserDto from '../dao/DTOs/current.dto.js'
 import {
@@ -16,6 +13,7 @@ import {
 import {
     cartsModel
 } from '../dao/models/cartsModel.js'
+import config from './config.js';
 import CustomError from '../services/errors/CustomError.js'
 import { incompleteRegisterFields } from '../services/errors/info.js'
 import EErrors from '../services/errors/enums.js'
@@ -134,7 +132,7 @@ const initializePassport = () => {
 
     passport.use('current', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: PRIVATE_KEY
+        secretOrKey: config.privateKey
     }, async (jwt_payload, done) => {
         try {
             const userDto = new UserDto(jwt_payload.user)

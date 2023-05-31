@@ -28,7 +28,7 @@ export default class Users {
 
     getByEmail = async (email) => {
         const user = await usersModel.findOne({email: email})
-        return user.toObject()
+        return user
     }
 
     updateById = async (id, user) => {

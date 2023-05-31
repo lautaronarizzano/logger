@@ -9,7 +9,8 @@ import { register,
     logout,
     current,
     github,
-    githubCallback } from '../../controllers/sessions.controller.js'
+    githubCallback, 
+    changePassword} from '../../controllers/sessions.controller.js'
 
 const router = Router()
 
@@ -23,6 +24,8 @@ router.get('/fail-register', failRegister)
 router.post('/login', login);
 
 router.post('/reset-password', forgotPasswordHandler)
+
+router.post('/change-password/:token', changePassword)
 
 router.get('/logout', logout)
 

@@ -14,6 +14,14 @@ const login = async (req, res) => {
     res.render('login')
 }
 
+const resetPassword = async (req, res) => {
+    res.render('resetPassword')
+}
+
+const changePassword = async (req, res) => {
+    res.render('changePassword')
+}
+
 const products = async (req, res) => {
     const { limit = 10, page = 1, query , sort } = req.query
     
@@ -70,5 +78,7 @@ export{
     register,
     login,
     products,
-    carts
+    carts,
+    resetPassword,
+    changePassword
 }

@@ -2,13 +2,17 @@ import userModel from '../dao/models/usersModel.js'
 import CustomError from '../services/errors/CustomError.js';
 import { incompleteLoginFields, incompleteRegisterFields, userNotFound, userOrPasswordIncorrect } from '../services/errors/info.js';
 import EErrors from '../services/errors/enums.js'
+import Session from '../dao/dbManagers/session.js'
 import {
+    decodeToken,
     generateToken,
     isValidPassword,
 } from '../utils.js';
-import { ForgotPassword } from '../services/users.service.js'
+import Users from '../dao/dbManagers/users.js'
+import { sendEmailResetPassword } from '../services/session.service.js';
 
-
+const sessionManager = new Session()
+const usersManager = new Users()
 
 const register = async (req, res) => {
     res.send({
@@ -146,21 +150,49 @@ const login = async (req, res) => {
 // }
 
 const forgotPasswordHandler = async (req, res) => {
-	const email = req.body.email
-	if(email == ""){
+	const {email} = req.body
+	if(email == "" || !email){
 		req.logger.error("Email is required")
 		res.status(400).send({error: "Email is required"})
 		return
 	}
+    const user = await usersManager.getByEmail(email)
+    if(!user) {
+        req.logger.error('email not found')
+        res.status(400).send({error: "email not found in DB"})
+    }
 	try {
-		let user = await ForgotPassword(email)
-		req.logger.info("Password reset mail sent, please check your mail.")
-		res.status(200).send("Password reset mail sent, please check your mail.")
+		const token = await sessionManager.getAccountToken(email)
+        if (token) {
+
+            await sendEmailResetPassword(email, token)
+            req.logger.info("Password reset mail sent, please check your mail.")
+            return res.status(200).send("Password reset mail sent, please check your mail.")
+        } else {
+            req.logger.error('Los datos ingresados no existen')
+            return res.status(500).send({ status: 'error', message: 'Los datos ingresados no existen' })
+        }
 	} catch (error) {
         console.log(error)
 		req.logger.fatal(error)
 		res.status(500).send(error)
 	}
+}
+
+const changePassword = async (req, res) => {
+    const token = req.params.token
+    const { passwordNew } = req.body
+    let result = decodeToken(token)
+
+    if(!result) return res.status(401).send({ status: 'error', message: 'Invalid token. Token has expired, please try again' })
+
+    const resp = await sessionManager.changePassword(result.user.email, passwordNew)
+
+    console.log(resp)
+
+    if(!resp || resp == null) return res.status(401).send({ status: 'error', message: 'No puede ingresar la misma contraseña que ya tenia antes.' })
+
+    return res.send({ message: 'success' })
 }
 
 const logout = async (req, res) => {
@@ -195,5 +227,6 @@ export {
     current,
     github,
     githubCallback,
-	forgotPasswordHandler
+	forgotPasswordHandler,
+    changePassword
 }

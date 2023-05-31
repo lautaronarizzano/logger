@@ -23,18 +23,30 @@ export const createHash = (password) =>
 export const isValidPassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
-export const PRIVATE_KEY = "CoderSecret";
 
 export const generateToken = (user) => {
   const token = jwt.sign({
       user,
     },
-    PRIVATE_KEY, {
-      expiresIn: "24h",
+    config.privateKey, {
+      expiresIn: "1h",
     }
   );
   return token;
 };
+
+export const decodeToken = (token) => {
+  const result = jwt.verify(token, config.privateKey, function (err, decoded) {
+
+    if(err) {
+      return null
+    } else {
+      return decoded
+    }
+  })
+
+  return result
+}
 
 //CUSTOM CALL
 export const passportCall = (strategy) => {
@@ -71,7 +83,7 @@ export const authenticateToken = (req, res, next) => {
   if (token == null) {
     return res.status(401).send("unauthorized");
   }
-  jwt.verify(token, PRIVATE_KEY, (err, user) => {
+  jwt.verify(token, config.privateKey, (err, user) => {
     if (err) {
       return res.status(403).send("forbbiden");
     }
@@ -87,11 +99,6 @@ export const authorizeRol = (rol) => (req, res, next) => {
   } else {
     res.status(401).send("Unauthorized");
   }
-  // if (req.user.user.rol === rol) {
-  //   next();
-  // } else {
-  //   res.status(401).send("Unauthorized");
-  // }
 };
 
 faker.locale = "es";
