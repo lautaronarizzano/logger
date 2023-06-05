@@ -102,6 +102,12 @@ const deleteProductInCart = async (req, res) => {
 const deleteCart = async (req, res) => {
     const cid = req.params.cid
     try {
+        const cart = cartsManager.getCartById(cid)
+
+        if(!cart) {
+            req.logger.error('No se pudo encontrar el carrito')
+            return res.status(404).send({status: 'error', error: 'Cart not found'})
+        }
         const result = await cartsManager.delete(cid)
         res.send({
             status: 'success',
@@ -121,7 +127,8 @@ const updateQuantity = async (req, res) => {
     const pid = req.params.pid;
     const quantity = req.body
     if(!quantity) {
-        return res.send('hola')
+        req.logger.error('No se ha ingresado una cantidad')
+        return res.status(400).send({status: 'error', error: `Quantity doesn't ingresed`})
     }
     try {
         const result = await cartsManager.updateQuantity(cid, pid, quantity)

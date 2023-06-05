@@ -7,7 +7,7 @@ import {
     decodeToken,
     generateToken,
     isValidPassword,
-} from '../utils.js';
+} from '../utils/utils.js';
 import Users from '../dao/dbManagers/users.js'
 import { sendEmailResetPassword } from '../services/session.service.js';
 

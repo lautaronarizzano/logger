@@ -5,7 +5,7 @@ import GithubStrategy from 'passport-github2'
 import jwt from 'passport-jwt';
 import {
     createHash
-} from '../utils.js';
+} from '../utils/utils.js';
 import UserDto from '../dao/DTOs/current.dto.js'
 import {
     createCart

@@ -1,9 +1,9 @@
 import fs from 'fs'
-import __dirname from '../../utils.js';
+import __mainDirname from '../../utils/utils.js';
 
 export default class CartManager {
     constructor() {
-        this.path = `${__dirname}/dao/files/Carts.json`
+        this.path = `${__mainDirname}/dao/files/Carts.json`
     }
 
     //funcion leer carts

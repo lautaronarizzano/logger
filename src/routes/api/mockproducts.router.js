@@ -6,7 +6,7 @@ import {
 } from '../../controllers/mockproducts.controller.js'
 import {
     generateProduct
-} from '../../utils.js'
+} from '../../utils/utils.js'
 
 const router = Router()
 

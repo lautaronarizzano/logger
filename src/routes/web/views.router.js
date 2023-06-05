@@ -9,7 +9,7 @@ import {
     resetPassword,
     changePassword
 } from '../../controllers/views.controller.js'
-import { authenticateToken  } from '../../utils.js'
+import { authenticateToken  } from '../../utils/utils.js'
 
 const router = Router()
 

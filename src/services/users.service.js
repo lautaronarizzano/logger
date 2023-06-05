@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import Handlebars from "handlebars";
 // import ResetPassword from '../dao/models/resetPasswordModel.js'
-import __dirname, { createHash } from "../utils.js";
+import __mainDirname, { createHash } from "../utils.js";
 import config from "../config/config.js";
 import { resetPassword } from "../utils/customHtml.js";
 
@@ -74,7 +74,7 @@ if (true) {
 //             console.log(actionUrl)
 
 //             // reading template file for sending in mail
-//             const templateStr = fs.readFileSync(path.resolve(__dirname, './views/resetPassword.handlebars')).toString('utf8')
+//             const templateStr = fs.readFileSync(path.resolve(__mainDirname, './views/resetPassword.handlebars')).toString('utf8')
 //             const template = Handlebars.compile(templateStr, { noEscape: true })
 
 //             // parsing template file for changing variables with values

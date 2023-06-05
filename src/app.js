@@ -1,6 +1,6 @@
 import { Server } from 'socket.io'
 import express from 'express'
-import __dirname, { addLogger } from './utils.js'
+import __mainDirname, { addLogger } from './utils/utils.js'
 import errorHandler from './middlewares/errors/errors.js'
 import config from './config/config.js'
 import session from 'express-session'
@@ -22,6 +22,8 @@ import initializePassport from './config/passport.config.js'
 import cookieParser from 'cookie-parser'
 import messagesManager from './controllers/chat.controller.js'
 import CustomError from './services/errors/CustomError.js'
+import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
 
 
 // const chatManager = new Chats()
@@ -30,9 +32,23 @@ const app = express()
 
 const error = new CustomError()
 
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentacion del proyecto de ecommerce',
+            description: 'API pensada para resolver el proceso del ecommerce'
+        }
+    },
+    apis: [`${__mainDirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(`${__mainDirname}/public`))
 
 app.use(cookieParser());
 
@@ -55,7 +71,7 @@ app.use(passport.session())
 
 //config de nuestras vistas
 app.engine('handlebars', handlebars.engine())
-app.set('views', `${__dirname}/views`)
+app.set('views', `${__mainDirname}/views`)
 app.set('view engine', 'handlebars')
 
 app.use(addLogger)

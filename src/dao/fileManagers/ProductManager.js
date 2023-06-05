@@ -1,9 +1,9 @@
 import fs from 'fs'
-import __dirname from '../../utils.js';
+import __mainDirname from '../../utils/utils.js';
 
 export default class ProductManager {
         constructor() {
-            this.path = `${__dirname}/dao/files/Products.json`;
+            this.path = `${__mainDirname}/dao/files/Products.json`;
         }
     
         //funcion para agregar el producto

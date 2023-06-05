@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { authorizeRol, authenticateToken } from '../../utils.js'
+import { authorizeRol, authenticateToken } from '../../utils/utils.js'
 
 const router = Router()
 

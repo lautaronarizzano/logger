@@ -1,9 +1,7 @@
 import {
   fileURLToPath
 } from "url";
-import {
-  dirname
-} from "path";
+import path from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
@@ -11,11 +9,12 @@ import {
 } from "@faker-js/faker";
 import * as dotenv from "dotenv";
 import winston from "winston";
-import config from './config/config.js'
+import config from '../config/config.js'
 
 const __filename = fileURLToPath(
   import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
+const __mainDirname = path.join(__dirname, '..')
 
 export const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -185,4 +184,4 @@ export const addLogger = (req, res, next) => {
   next();
 };
 
-export default __dirname;
+export default __mainDirname;

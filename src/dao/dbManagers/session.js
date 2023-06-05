@@ -1,4 +1,4 @@
-import { createHash, generateToken, isValidPassword } from "../../utils.js";
+import { createHash, generateToken, isValidPassword } from "../../utils/utils.js";
 import Users from "../dbManagers/users.js";
 import usersModel from "../models/usersModel.js";
 

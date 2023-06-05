@@ -1,0 +1,264 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos fueron obtenidos satisfactoriamente de la base de datos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/productModel'
+        "400":
+          description: query no válida para buscar productos
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    post:
+      summary: Registrar un nuevo producto en el sistema
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createProduct'
+
+      responses:
+        "200":
+          description: El producto fue creado satisfactoriamente en la base de datos
+        "400":
+          description: No podes crear un producto ya creado o faltan propiedades al producto que deseas agregar
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#components/responseBodies/alreadyCreateProduct'
+                  - $ref: '#components/responseBodies/createProductIncompleteValues'
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de consulta defectuosa o fallo de conexión a la base de datos
+
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un solo producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue obtenido satisfactoriamente de la base de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productModel'
+        "400":
+          description: query no válida para buscar productos
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    put:
+      summary: Actualiza un solo producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'
+
+      responses:
+        "200":
+          description: El producto fue actualizado satisfactoriamente en la base de datos
+        "400":
+          description: No podes actualizar un producto que no es tuyo siendo premium
+        "404":
+          description: El producto no fue encontrado en la base de datos
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    delete:
+      summary: Elimina un solo producto a partir de su pid
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue eliminado satisfactoriamente en la base de datos
+        "400":
+          description: No podes eliminar un producto que no es tuyo siendo premium
+        "404":
+          description: El producto no fue encontrado en la base de datos
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+
+components:
+  schemas:
+    productModel:
+      type: object
+      properties:
+        _id: 
+          type: objectId
+          description: Id autogenerado de MongoDB
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: Imagen del producto
+        code:
+          type: string
+          description: Código del producto
+        stock:
+          type: number
+          description: Stock del producto
+        status:
+          type: string
+          description: Estado del producto
+        category:
+          type: string
+          description: Categoría del producto
+        owner:
+          type: string
+          description: Propietario del producto
+      example:
+        _id: ObjectId("14Jhk312312dsh213")
+        title: Hamburguesa
+        description: Esto es una hamburguesa
+        price: 2150
+        thumbnail: https://imagen
+        code: abc123
+        stock: 50
+        status: true
+        category: comida
+        owner: admin
+  requestBodies:
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnail:
+          type: String
+          description: Imagen del producto
+        code:
+          type: String
+          description: Código del producto
+        stock:
+          type: Number
+          description: Stock del producto
+        status:
+          type: String
+          description: Estado del producto
+        category:
+          type: String
+          description: Categoría del producto
+        owner:
+          type: String
+          description: Propietario del producto
+      example:
+        title: Hamburguesa
+        description: Esto es una hamburguesa
+        price: 2150
+        thumbnail: https://imagen
+        code: abc123
+        stock: 50
+        status: true
+        category: comida
+        owner: admin
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnail:
+          type: String
+          description: Imagen del producto
+        code:
+          type: String
+          description: Código del producto
+        stock:
+          type: Number
+          description: Stock del producto
+        status:
+          type: String
+          description: Estado del producto
+        category:
+          type: String
+          description: Categoría del producto
+      example:
+        title: Hamburguesa
+        description: Esto es una hamburguesa
+        price: 2150
+        thumbnail: https://imagen
+        code: abc123
+        stock: 50
+        status: true
+        category: comida
+  responseBodies:
+    alreadyCreateProduct:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: Product already exists
+    createProductIncompleteValues:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: Incomplete values
+

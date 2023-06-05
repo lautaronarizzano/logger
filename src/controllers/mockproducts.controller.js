@@ -1,4 +1,4 @@
-import { generateProduct } from "../utils.js"
+import { generateProduct } from "../utils/utils.js"
 
     const get = async () => {
         try {

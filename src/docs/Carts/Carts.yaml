@@ -1,0 +1,308 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtiene todos los carritos
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Los carritos fueron obtenidos satisfactoriamente de la base de datos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/cartModel'
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    post:
+      summary: Crea un carrito
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: El carrito fue creado con exito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/createCart'
+        "400": 
+          description: Falta prpiedad products al carrito
+        "500": 
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createCart'
+
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un solo carrito a partir de su cid
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El carrito fue obtenido satisfactoriamente de la base de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cartModel'
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    put:
+      summary: Actualiza un solo carrito a partir de su pid
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateCart'
+      responses:
+        "200":
+          description: El producto fue actualizado satisfactoriamente en la base de datos
+        "400":
+          description: El carrito seleccionado no existe
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    delete:
+      summary: Elimina un solo carrito a partir de su cid
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El carrito fue eliminado satisfactoriamente en la base de datos
+        "404":
+          description: El producto no fue encontrado en la base de datos
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Inserta un producto seleccionado en un carrito seleccionado
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto ha sido agregado exitosamente
+        "400": 
+          description: No se puede agregar un producto creado por vos siendo premium o el producto/carrito es inexistente
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#components/responseBodies/premiumPost'
+                  - $ref: '#components/responseBodies/inexistentProduct'
+                  - $ref: '#components/responseBodies/inexistentCart'
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+    put:
+      summary: Edita la cantidad de un producto seleccionado en un carrito seleccionado
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: La cantidad del producto ha sido editado exitosamente
+        "400": 
+          description: Cantidad a editar no ingresada
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateQuantity'
+    delete:
+      summary: Elimina un solo producto seleccionado de un carrito seleccionado
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: El id del producto
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue eliminado satisfactoriamente del carrito
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Procesa la compra del carrito seleccionado
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: El id del carrito
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El pago fue procesado exitosamente
+        "400":
+          description: No queda stock en los productos
+        "404":
+          description: El carrito no existe
+        "500":
+          description: Error interno del servidor, usualmente generado por una consulta defectuosa o fallo de conexión a la base de datos
+
+components:
+  schemas:
+    cartModel:
+      type: object
+      properties:
+        _id: 
+          type: objectId
+          description: Id autogenerado de MongoDB
+        products:
+          type: array
+          description: array que contiene los productos del carrito
+      example:
+        _id: ObjectId("14Jhk312312dsh213")
+        products: ["hamburguesa", "sprite", "papas fritas medianas"]
+    createCart:
+      type: object
+      properties:
+        products:
+          type: array
+          description: productos del carrito
+      example:
+        products: []
+  requestBodies:
+    createCart:
+      type: object
+      properties:
+        products:
+          type: array
+          description: productos del carrito
+      example:
+        products: []
+    updateQuantity:
+      type: object
+      properties:
+        quantity:
+          type: Number
+          description: Cantidad a actualizar del producto
+      example:
+        Quantity: 4
+    updateCart:
+      type: array
+      properties:
+        products:
+          type: array
+          description: Id de los productos que desea poner
+      example:
+        products: [{_id: jhkj3h132112ds}, {_id: jssdsaj33122112ds}, {_id: dbkjjklsadasl21}]
+  responseBodies:
+    premiumPost:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: No puedes agregar un producto que hayas creado
+    inexistentProduct:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: No existe el producto indicado
+    inexistentCart:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: No existe el carrito indicado
+    premiumEdit:
+      type: object
+      properties:
+        status:
+          type: String
+          description: Estado de la peticion
+        error:
+          type: String
+          description: Mensaje de error
+      example:
+        status: error
+        error: No puedes editar un producto que no sea tuyo siendo premium

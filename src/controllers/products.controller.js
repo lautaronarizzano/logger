@@ -53,7 +53,7 @@ const getProducts = async (req, res) => {
             }
             else{
                 req.logger.error('query is not valid')
-                res.send({status: error, payload: 'query is not valid'})
+                res.status(400).send({status: 'error', payload: 'query is not valid'})
             }
         }
 
@@ -95,6 +95,8 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock, category, status} = req.body
+
+    const products = productManager.getProducts()
     
     
     try {
@@ -106,6 +108,12 @@ const createProduct = async (req, res) => {
                 code: EErrors.PRODUCT_FIELDS_ERROR
             })
         } 
+        const product = products.find(p => p.code == code)
+
+        if(product) {
+            req.logger.error('Product already exists')
+            return res.status(400).send({status: 'error', error: 'Product already exists'})
+        }
         const result = await productManager.save({
             title,
             description,
@@ -130,6 +138,11 @@ const updateProduct = async (req, res) => {
     const product = req.body
 
     const products = await productsRepository.getProductById(pid)
+
+    if(!products) {
+        req.logger.error('Cannot found product')
+        return res.status(404).send({error:'Product not found'})
+    }
 
         if(req.user.user.rol == 'premium' && products[0].owner !== req.user.user.email) {
             req.logger.error(`Cannot edit if isn't your own product`)

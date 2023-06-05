@@ -12,7 +12,7 @@ import {
     updateCart,
     purchaseCart
 } from '../../controllers/carts.controller.js'
-import { authenticateToken, authorizeRol } from '../../utils.js'
+import { authenticateToken, authorizeRol } from '../../utils/utils.js'
 
 const router = Router()
 

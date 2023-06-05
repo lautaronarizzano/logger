@@ -8,7 +8,7 @@ import {
     updateProduct,
     deleteProduct
 } from '../../controllers/products.controller.js'
-import { authorizeRol, authenticateToken } from '../../utils.js'
+import { authorizeRol, authenticateToken } from '../../utils/utils.js'
 
 const router = Router()
 
