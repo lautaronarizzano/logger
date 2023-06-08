@@ -1,14 +1,9 @@
-// import Products from '../dao/dbManagers/products.js'
 import { productModel } from '../dao/models/productModel.js'
-import Products from '../dao/factory/products.factory.js'
-import ProductsRepository from '../repository/products.repository.js'
 import CustomError from '../services/errors/CustomError.js'
 import EErrors from '../services/errors/enums.js'
 import { incompleteFieldError } from '../services/errors/info.js'
+import * as productsService from '../services/products.service.js'
 
-const productManager = new Products()
-
-const productsRepository = new ProductsRepository(productManager)
 
 const getProducts = async (req, res) => {
     const { limit = 10, page = 1, query , sort } = req.query
@@ -66,37 +61,28 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
     const pid = req.params.pid
     try {
-        const products = await productsRepository.getProductById(pid)
-        // if(products) {
-        //     CustomError.createError({
-        //         name: 'PIDError',
-        //         cause: generatePIDErrorInfo({
-        //             pid
-        //         }),
-        //         message: 'Error tratando de encontrar un producto mediante el id',
-        //         code: EErrors.PRODUCT_ID_LEFT_ERROR
-        //     })
-        // }
+        const products = await productsService.getProductById(pid)
+        if(!products || products.length === 0) {
+            CustomError.createError({
+                name: 'PIDError',
+                cause: generatePIDErrorInfo({
+                    pid
+                }),
+                message: 'Error tratando de encontrar un producto mediante el id',
+                code: EErrors.PRODUCT_ID_LEFT_ERROR
+            })
+        }
         res.send({status: 'success', payload: products})
     } catch (error) {
         req.logger.fatal(error)
         res.status(500).send({ error })
     }
 }
-// const getProductById = async (req, res) => {
-//     const pid = req.params.pid
-//     try {
-//         const products = await productManager.getById(pid)
-//         res.send({status: 'success', payload: products})
-//     } catch (error) {
-//         res.status(500).send({ error })
-//     }
-// }
 
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock, category, status} = req.body
 
-    const products = productManager.getProducts()
+    const products = await productsService.getAll()
     
     
     try {
@@ -114,7 +100,7 @@ const createProduct = async (req, res) => {
             req.logger.error('Product already exists')
             return res.status(400).send({status: 'error', error: 'Product already exists'})
         }
-        const result = await productManager.save({
+        const result = await productsService.createProduct({
             title,
             description,
             price,
@@ -128,6 +114,7 @@ const createProduct = async (req, res) => {
         res.send({result: 'success', payload: result})
 
     } catch (error) {
+        console.log(error)
         req.logger.fatal(error)
         res.status(500).send({error: error})
     }
@@ -137,7 +124,7 @@ const updateProduct = async (req, res) => {
     const pid = req.params.pid
     const product = req.body
 
-    const products = await productsRepository.getProductById(pid)
+    const products = await productsService.getProductById(pid)
 
     if(!products) {
         req.logger.error('Cannot found product')
@@ -149,9 +136,10 @@ const updateProduct = async (req, res) => {
             return res.status(400).send({error: `Cannot edit if isn't your own product`})
         }
     try {
-        const result = await productManager.update(pid, product)
+        const result = await productsService.update(pid, product)
         res.send({status: 'success', payload: result})
     } catch (error) {
+        console.log(error)
         req.logger.fatal(error)
         res.status(500).send({ error })
     }
@@ -160,13 +148,13 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const pid = req.params.pid
-        const product = await productsRepository.getProductById(pid)
+        const product = await productsService.getProductById(pid)
 
         if(req.user.user.rol == 'premium' && product[0].owner !== req.user.user.email) {
             req.logger.error(`Cannot delete if isn't your own product`)
             return res.status(400).send({error: `Cannot delete if isn't your own product`})
         }
-        const result = await productManager.delete(pid)
+        const result = await productsService.deleteProduct(pid)
         res.send({status: 'success', payload: result})
     } catch (error) {
         console.log(error)

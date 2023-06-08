@@ -82,7 +82,6 @@ paths:
           application/json:
             schema:
               $ref: '#components/requestBodies/updateProduct'
-
       responses:
         "200":
           description: El producto fue actualizado satisfactoriamente en la base de datos

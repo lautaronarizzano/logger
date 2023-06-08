@@ -1,104 +1,54 @@
-import Users from "../dao/dbManagers/users.js";
-import { sendEmail} from "./mail.service.js";
-import fs from "fs";
-import path from "path";
-import Handlebars from "handlebars";
-// import ResetPassword from '../dao/models/resetPasswordModel.js'
-import __mainDirname, { createHash } from "../utils.js";
-import config from "../config/config.js";
-import { resetPassword } from "../utils/customHtml.js";
+import { Users } from "../dao/factory.js";
+import UsersRepository from "../repository/users.repository.js";
+import {transporter as sendEmail} from "./mail.service.js";
+import __mainDirname, {
+} from "../utils/utils.js"
+import {
+    createMailHtml
+} from "../utils/customHtml.js";
 
-const usersManager = new Users();
+const users = new Users();
+const usersRepository = new UsersRepository(users)
 
-export async function ForgotPassword(email) {
-let userExist = await usersManager.getByEmail(email);
-
-if (true) {
-    let user = userExist;
-    console.log(user);
-    try {
-    // const data = {
-    //     fromEmail: config.fromEmail,
-    //     fromName: config.fromName,
-    //     subject: "Reset Password",
-    //     body: ``,
-    //     toEmail: [user.email],
-    // };
-    const email = {
-        to: user.email,
-        subject: "Reset Password",
-        html: resetPassword
-    }
-
-    await sendEmail(email)
-    console.log(email)
-    } catch (error) {
-        console.log(error)
-    }
-}   
+export const getAll = async () => {
+    const result = await usersRepository.getAll()
+    return result
 }
 
-// export async function ForgotPassword(email) {
-//     let userExist = await usersManager.getByEmail(email)
-//     // console.log(userExist)
-//     if (true) {
-//         let user = userExist;
-//         const userEmail = user.email;
-//         console.log(user)
-//         try {
+export const getById = async (uid) => {
+    const result = await usersRepository.getById(uid)
+    return result
+}
 
-//             // creating data for sending mail
-//             const data = {
-//                 "fromEmail": config.fromEmail,
-//                 "fromName": config.fromName,
-//                 "subject": "Reset Password",
-//                 "body": ``,
-//                 "toEmail": [user.email]
-//             }
-//             console.log(data)
+export const changeRolToUser = async (user) => {
+    user.rol = 'user'
+    const result = await usersRepository.updateById(user._id, user)
+    return result
+}
 
-//             //initializing ResetPassword() model for storing user_id and token in the database.
-//             // let resetPassword = new ResetPassword();
+export const changeRolToPremium = async (user) => {
+    user.rol = 'premium'
+    const result = await usersRepository.updateById(user._id, user)
+    return result
+}
 
-//             // creating token
-//             let token = createHash(user.email)
+export async function ForgotPassword(email) {
+    let userExist = await usersRepository.getByEmail(email);
 
-//             // storing user_id and token in `reset_password` table
-//             let result = usersManager.saveNewPassword([{
-//                 "user_id": user._id,
-//                 "token": token
-//             }])
+    if (userExist) {
+        let user = userExist;
+        console.log(user);
+        try {
+            const email = {
+                to: user.email,
+                subject: "Reset Password",
+                html: createMailHtml
+            }
 
-//             // creating redirect url for navigating user to fill new password
-//             let actionUrl = `http://localhost:8080/api/sessions/reset/${token}`;
-//             console.log(actionUrl)
-
-//             // reading template file for sending in mail
-//             const templateStr = fs.readFileSync(path.resolve(__mainDirname, './views/resetPassword.handlebars')).toString('utf8')
-//             const template = Handlebars.compile(templateStr, { noEscape: true })
-
-//             // parsing template file for changing variables with values
-
-//             const html = template(
-//                 {
-//                     "name": `${user.first_name} ${user.last_name}`,
-//                     "action_url": actionUrl
-
-//                 }
-//             )
-//             data.body = html;
-
-//             // sending mail using nodemailer library
-//             let resultMail = await sendMail(data);
-//             console.log(resultMail)
-
-//         } catch (error) {
-//             console.log(error);
-//             throw new Error("Something wrong in sending mail");
-//         }
-
-//     } else {
-//         throw new Error("User not found with that email")
-//     }
-
-// }
+            await sendEmail(email)
+            console.log(email)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}

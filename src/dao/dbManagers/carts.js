@@ -37,83 +37,10 @@ export default class Carts {
         return result
     }
 
-    addProduct = async (cid, pid) => {
-        
-        try{
-            const cartToUpdate = await this.getById(cid)
-            if(!cid || !pid) return res.status(400).send({error: "cid or pid not found"})
-    
-            const addPost = async (post) =>{
-    
-                try {
-                    // console.log(cartToUpdate)
-                    const existingPost = cartToUpdate.products.find(p => p.product._id == pid);
-                    // const existingPost = cartToUpdate.products.find(p => p.product == post);
-
-
-
-                    // console.log('El id es: ' + existingPost.product.owner)
-                    // console.log(req.user.user.rol)
-        
-                    // if(!existingPost) {
-                    //     throw CustomError.createError({
-                    //         name: `Product doesn't exist`,
-                    //         cause: productNotFound(pid),
-                    //         message: 'Error intentando agregar producto al carrito',
-                    //         code: EErrors.PRODUCT_NOT_FOUND
-                    //     })
-                    // }
-        
-                    if (existingPost) {
-        
-                        // Actualizar post existente
-                        existingPost.product = pid;
-        
-                        existingPost.quantity += 1;
-        
-                        let result = await cartsModel.updateOne({_id: cid}, cartToUpdate)
-        
-                        return result
-                    } else {
-        
-                        // Agregar nuevo post
-                        cartToUpdate.products.push({
-                            product: post,
-                            quantity:1
-                        })
-                        let result = await cartsModel.updateOne({_id: cid}, cartToUpdate)
-                        return result
-                    }
-                    
-                } catch (error) {
-                    return console.log(error)
-                }
-            }
-            addPost(pid)
-
-        } catch (error){
-            res.status(500).send({error: error})
-        }
-
-    }
 
     update = async (cid,newprods) =>{
         let result = await cartsModel.updateOne({_id: cid},{products:newprods});
         return result;
-    }
-
-
-    deleteProduct = async (cid, pid) => {
-        const cart = await this.getCartById(cid)
-        let products = cart.products;
-        const index = products.findIndex(p => p.product._id == pid)
-        if(index == -1) {
-            console.log('hola')
-            res.status(404).send('hola')
-        }
-            
-        products.splice(index, 1)
-        this.update(cid, cart.products)
     }
 
     delete = async(cid) => {

@@ -8,6 +8,7 @@ export default class Products {
     getAll = async () => {
         const products = await productModel.find()
         return products.map(prod => prod.toObject())
+        // return products
     }
 
     save = async (product) => {

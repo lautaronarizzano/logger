@@ -5,6 +5,10 @@ export default class ProductsRepository {
         this.dao = dao
     }
 
+    getAll = async () => {
+        const result = await this.dao.getAll()
+        return result
+    }
 
     getProductById = async (pid) => {
         const result = await this.dao.getById(pid)
@@ -13,12 +17,13 @@ export default class ProductsRepository {
 
     createProduct = async (product) => {
         const productDto = new ProductDto(product)
-        const result = await this.dao.create(productDto)
+        const result = await this.dao.save(product)
         return result
     }
 
     updateProduct = async (pid, product) => {
         const result = await this.dao.update(pid, product)
+        console.log(result)
         return result
     }
 
