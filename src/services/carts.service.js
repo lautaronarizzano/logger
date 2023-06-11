@@ -66,13 +66,6 @@ export const deleteProduct = async (cid, pid) => {
     let products = cart.products
     const index = products.findIndex(p => p.product._id == pid)
 
-    // const index = products.findIndex(p => console.log(p.product._id == pid))
-
-
-    // if(index == -1) {
-    //     return index
-    // }
-
     products.splice(index, 1)
     const result = await cartsRepository.update(cid, cart.products)
     return result

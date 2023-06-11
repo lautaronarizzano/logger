@@ -15,8 +15,18 @@ export const getAll = async () => {
     return result
 }
 
+export const getByEmail = async (uemail) => {
+    const result = await usersRepository.getByEmail(uemail)
+    return result
+}
+
 export const getById = async (uid) => {
     const result = await usersRepository.getById(uid)
+    return result
+}
+
+export const deleteUser = async (email) => {
+    const result = await usersRepository.delete(email)
     return result
 }
 

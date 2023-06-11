@@ -23,7 +23,6 @@ export default class ProductsRepository {
 
     updateProduct = async (pid, product) => {
         const result = await this.dao.update(pid, product)
-        console.log(result)
         return result
     }
 

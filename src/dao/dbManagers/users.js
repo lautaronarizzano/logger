@@ -40,4 +40,9 @@ export default class Users {
         const result = await ResetPassword.create(newUser)
         return result
     }
+
+    delete = async (email) => {
+        const result = await usersModel.deleteOne({ email: email })
+        return result
+    }
 }

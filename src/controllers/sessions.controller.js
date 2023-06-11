@@ -88,67 +88,6 @@ const login = async (req, res) => {
     }
 }
 
-// const forgotPassword = async (req, res) => {
-//     const email = req.body.email
-//     if(email == "") {
-//         req.logger.error("Email is required")
-//         res.status(400).json({"error": "Email is required"})
-//     }
-//     try {
-// 		//services
-// 		let userExist = await usersManager.getByEmail(email)
-// 		if(userExist.length > 0) {
-// 			let user = userExist[0]
-// 			const userEmail = user.email
-// 			req.logger.debug(user)
-// 			try {
-	
-// 		const data = {
-// 			"fromEmail": process.env.APP_FROM_EMAIL,
-// 			"fromName": process.env.APP_FROM_NAME,
-// 			"subject": "Reset Password",
-// 			"body": ``,
-// 			"toEmail": [user.email]
-// 			}
-// 			req.logger.debug(data)
-	
-// 			let resetPassword = new ResetPassword()
-	
-// 			let token = createHash(user.email)
-
-// 			let result = resetPassword.create([{
-// 				"user_id": user.id,
-// 				"token": token
-// 			}])
-
-// 			let actionUrl = `http://localhost:8080/api/sessions/reset/${token}`
-// 			req.logger.debug(actionUrl)
-
-// 			const templateStr = fs.readFileSync(path.resolve(__dirname, '../views/mails/resetPassword.hbs')).toString('utf8')
-//             const template = Handlebars.compile(templateStr, { noEscape: true })
-
-// 			const html = template(
-// 				{
-// 					"name": `${user.first_name} ${user.last_name}`,
-// 					"action_url": actionUrl
-// 				}
-// 			)
-// 			data.body = html
-
-// 			let resultMail = await sendMail(data)
-// 			req.logger.debug(resultMail)
-// 			} catch (error) {
-// 				req.logger.fatal(error)
-// 				res.status(500).send(error)
-// 			}
-// 		} else {
-// 			req.logger.error(error)
-// 			res.status(500).send(error)
-// 		}
-// 		//services
-
-// }
-
 const forgotPasswordHandler = async (req, res) => {
 	const {email} = req.body
 	if(email == "" || !email){

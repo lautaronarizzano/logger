@@ -38,5 +38,9 @@ export default class UsersRepository {
         return result
     }
 
+    delete = async (email) => {
+        const result = await this.dao.delete(email)
+        return result
+    }
 
 }

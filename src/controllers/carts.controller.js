@@ -43,13 +43,13 @@ const getCartById = async (req, res) => {
 }
 
 const createCart = async (req, res) => {
-    const cart = req.body
+    const cart = req.body.cart
     try {
 
-        if(!cart || cart !== []) {
-            req.logger.error('cart must be an []')
-            res.status(400).send({ status: 'error', error: 'cart must be an []' })
-        }
+        // if(!cart || cart !== []) {
+        //     req.logger.error('cart must be an []')
+        //     res.status(400).send({ status: 'error', error: 'cart must be an []' })
+        // }
 
         const result = await cartsService.addCart(cart)
         res.send({
@@ -57,6 +57,7 @@ const createCart = async (req, res) => {
             payload: result
         })
     } catch (error) {
+        console.log(error)
         req.logger.fatal(error)
         res.status(500).send({
             error
